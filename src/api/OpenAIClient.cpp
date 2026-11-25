@@ -236,20 +236,9 @@ namespace OpenAIClientImpl
             }
         }
 
-        // NOW show the loader dialog after prompt selection is complete
-        _loaderDlg.setModelName(configAPIValue_model);
-        _loaderDlg.doDialog();
+        // Reset cancellation state without showing the loading dialog.
+        // Requests run silently; the editor is updated when the response arrives.
         _loaderDlg.resetDialog();
-        ::UpdateWindow(_loaderDlg.getHSelf());
-
-        // Process pending messages to make dialog visible
-        MSG msg;
-        while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            ::TranslateMessage(&msg);
-            ::DispatchMessage(&msg);
-        }
-        ::Sleep(10);
 
         // Check if streaming is enabled
         bool streaming = (configAPIValue_streaming == L"1");
