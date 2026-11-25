@@ -1,0 +1,32 @@
+name: Build NppOpenAI (silent loader)
+
+on:
+  push:
+    branches:
+      - silent-loading-dialog
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-x64:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build x64 Release
+        shell: pwsh
+        run: |
+          msbuild .\vs.proj\NppPluginTemplate.vcxproj /m /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+
+      - name: Upload plugin DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: NppOpenAI-silent-loader-x64
+          path: bin64/*.dll
+          if-no-files-found: error
